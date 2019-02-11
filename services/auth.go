@@ -6,14 +6,16 @@ import (
 	"freelancers/util"
 )
 
-type authDAO interface {
-	Login(rs app.RequestScope, user *models.User) *models.User
-	Register(rs app.RequestScope, user *models.User) error
-}
+type (
+	authDAO interface {
+		Login(rs app.RequestScope, user *models.User) *models.User
+		Register(rs app.RequestScope, user *models.User) error
+	}
 
-type AuthService struct {
-	dao authDAO
-}
+	AuthService struct {
+		dao authDAO
+	}
+)
 
 func NewAuthService(dao authDAO) *AuthService {
 	return &AuthService{dao}

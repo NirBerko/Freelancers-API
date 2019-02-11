@@ -14,6 +14,7 @@ import (
 
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Project{})
 }
 
 func main() {
@@ -40,8 +41,11 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 		c.String(200, "OK "+app.Version)
 	})
 
-	authDAO := daos.NewAuthDAO()
-	apis.ServeAuthResource(router, services.NewAuthService(authDAO))
+	authDao := daos.NewAuthDAO()
+	apis.ServeAuthResource(router, services.NewAuthService(authDao))
+
+	projectDAO := daos.NewProjectDAO()
+	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDAO))
 
 	router.Use(
 		app.JwtMiddleware(),

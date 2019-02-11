@@ -1,8 +1,10 @@
 package models
 
+import "github.com/lib/pq"
+
 type Project struct {
 	DBBase
 	Title       string
 	Description string
-	Skills      map[int]Skill
+	Skills      pq.StringArray `gorm:"type:varchar(64)[]"`
 }
