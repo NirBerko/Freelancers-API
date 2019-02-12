@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"strconv"
+	"os"
 )
 
 func AutoMigrate(db *gorm.DB) {
@@ -27,7 +27,7 @@ func main() {
 	gin.SetMode(app.Config.Mode)
 
 	buildRouter(r, db)
-	r.Run(":" + strconv.Itoa(app.Config.Server.Port))
+	r.Run(":" + os.Getenv("PORT"))
 }
 
 func buildRouter(router *gin.Engine, db *gorm.DB) {
