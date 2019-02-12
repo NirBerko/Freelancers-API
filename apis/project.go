@@ -2,9 +2,9 @@ package apis
 
 import (
 	"freelancers/app"
-	"freelancers/errors"
 	"freelancers/models"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type (
@@ -17,6 +17,11 @@ type (
 	}
 )
 
+type bodyProject struct {
+	models.Project
+	skills []string
+}
+
 func ServeProjectResource(rg *gin.RouterGroup, service projectService) {
 	r := &projectResource{service}
 
@@ -24,15 +29,17 @@ func ServeProjectResource(rg *gin.RouterGroup, service projectService) {
 }
 
 func (r *projectResource) CreateProject(c *gin.Context) {
-	var project models.Project
+	var project bodyProject
 	c.BindJSON(&project)
 
-	err := r.service.CreateProject(app.GetRequestScope(c), &project)
+	c.JSON(http.StatusOK, project)
+
+	/*err := r.service.CreateProject(app.GetRequestScope(c), &project)
 
 	if err != nil {
 		errorHandler := errors.InternalServerError(err)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
 		c.JSON(200, project)
-	}
+	}*/
 }
