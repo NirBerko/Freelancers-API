@@ -1,24 +1,17 @@
 package main
 
-import "C"
 import (
 	"fmt"
-	"freelancers/apis"
-	"freelancers/app"
-	"freelancers/daos"
-	"freelancers/models"
-	"freelancers/services"
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"net/http"
 	"os"
 )
 
+/*
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
-}
+}*/
 func hello(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprintln(res, "hello, heroku")
 }
@@ -43,6 +36,7 @@ func main() {
 		r.Run(":" + strconv.Itoa(app.Config.Server.Port))*/
 }
 
+/*
 func buildRouter(router *gin.Engine, db *gorm.DB) {
 	router.Use(
 		app.Init(),
@@ -69,4 +63,4 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 		c.String(200, "OK "+app.Version)
 	})
 
-}
+}*/
