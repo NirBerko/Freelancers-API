@@ -7,4 +7,6 @@ type Project struct {
 	Title       string
 	Description string
 	Skills      pq.StringArray `gorm:"type:varchar(64)[]"`
+	BudgetType  int
+	BudgetLevel int
 }
