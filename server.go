@@ -2,6 +2,7 @@ package main
 
 import "C"
 import (
+	"fmt"
 	"freelancers/apis"
 	"freelancers/app"
 	"freelancers/daos"
@@ -10,25 +11,36 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"strconv"
+	"net/http"
+	"os"
 )
 
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
 }
-
+func hello(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(res, "hello, heroku")
+}
 func main() {
-	app.LoadConfig()
 
-	db, _ := gorm.Open("postgres", app.Config.DSN)
-	AutoMigrate(db)
+	http.HandleFunc("/", hello)
+	fmt.Println("listening...")
+	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	if err != nil {
+		panic(err)
+	}
+	/*
+		app.LoadConfig()
 
-	r := gin.Default()
-	gin.SetMode(app.Config.Mode)
+		db, _ := gorm.Open("postgres", app.Config.DSN)
+		AutoMigrate(db)
 
-	buildRouter(r, db)
-	r.Run(":" + strconv.Itoa(app.Config.Server.Port))
+		r := gin.Default()
+		gin.SetMode(app.Config.Mode)
+
+		buildRouter(r, db)
+		r.Run(":" + strconv.Itoa(app.Config.Server.Port))*/
 }
 
 func buildRouter(router *gin.Engine, db *gorm.DB) {
