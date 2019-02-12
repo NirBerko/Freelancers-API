@@ -2,7 +2,7 @@ package main
 
 import "C"
 import (
-	"apis"
+	"freelancers/apis"
 	"freelancers/app"
 	"freelancers/daos"
 	"freelancers/models"
