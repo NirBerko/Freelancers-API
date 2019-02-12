@@ -10,8 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"net/http"
-	"os"
+	"strconv"
 )
 
 func AutoMigrate(db *gorm.DB) {
@@ -22,18 +21,14 @@ func AutoMigrate(db *gorm.DB) {
 func main() {
 	app.LoadConfig()
 
-	/*db, _ := gorm.Open("postgres", app.Config.DSN)
-	AutoMigrate(db)*/
+	db, _ := gorm.Open("postgres", app.Config.DSN)
+	AutoMigrate(db)
 
 	r := gin.Default()
 	gin.SetMode(app.Config.Mode)
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, nil)
-	})
-
-	//buildRouter(r, db)
-	r.Run(":" + os.Getenv("PORT"))
+	buildRouter(r, db)
+	r.Run(":" + strconv.Itoa(app.Config.Server.Port))
 }
 
 func buildRouter(router *gin.Engine, db *gorm.DB) {
