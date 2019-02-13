@@ -11,6 +11,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -31,6 +32,10 @@ func main() {
 	r := gin.Default()
 	gin.SetMode(os.Getenv("MODE"))
 
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	})
+
 	buildRouter(r, db)
 	r.Run(":" + os.Getenv("PORT"))
 }
@@ -43,7 +48,7 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.Abort()
-		c.String(200, "OK "+app.Version)
+		c.String(http.StatusOK, "OK "+app.Version)
 	})
 
 	authDao := daos.NewAuthDAO()
