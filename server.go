@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
 )
 
@@ -19,6 +21,11 @@ func AutoMigrate(db *gorm.DB) {
 
 func main() {
 	app.LoadConfig()
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	db, _ := gorm.Open("postgres", os.Getenv("DSN"))
 	AutoMigrate(db)
