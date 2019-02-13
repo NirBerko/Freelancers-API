@@ -26,6 +26,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	log.Println("DSN: " + os.Getenv("DSN"))
+
 	db, _ := gorm.Open("postgres", os.Getenv("DSN"))
 	AutoMigrate(db)
 
