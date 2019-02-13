@@ -48,7 +48,7 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 		c.String(200, "OK "+app.Version)
 	})
 
-	authDao := daos.NewAuthDAO()
+	authDao := daos.NewAuthDAO()ss
 	apis.ServeAuthResource(router, services.NewAuthService(authDao))
 
 	projectDAO := daos.NewProjectDAO()

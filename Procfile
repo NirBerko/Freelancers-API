@@ -1,1 +1,1 @@
-web: Golang_server
+web: build
