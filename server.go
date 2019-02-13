@@ -20,7 +20,7 @@ func AutoMigrate(db *gorm.DB) {
 func main() {
 	app.LoadConfig()
 
-	db, _ := gorm.Open("postgres", app.Config.DSN)
+	db, _ := gorm.Open("postgres", os.Getenv("DSN"))
 	AutoMigrate(db)
 
 	r := gin.Default()
