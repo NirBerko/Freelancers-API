@@ -1,17 +1,17 @@
 package apis
 
 import (
-	"fmt"
 	"freelancers/app"
 	"freelancers/errors"
 	"freelancers/models"
 	"freelancers/models/UIModels"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type (
 	authService interface {
-		Login(rs app.RequestScope, user *models.User)
+		Login(rs app.RequestScope, user *models.User) *UIModels.User
 		Register(rs app.RequestScope, user *models.User) error
 	}
 
@@ -28,28 +28,30 @@ type (
 func ServeAuthResource(rg *gin.Engine, service authService) {
 	r := &authResource{service}
 
-	rg.POST("/login", r.Auth)
+	rg.POST("/login", r.Login)
 	rg.POST("/register", r.Register)
 }
 
-func (r *authResource) Auth(c *gin.Context) {
+func (r *authResource) Login(c *gin.Context) {
 	var user models.User
 	_ = c.BindJSON(&user)
 
-	//r.service.Login(app.GetRequestScope(c), &user)*/
+	authenticatedUser := r.service.Login(app.GetRequestScope(c), &user)
 
-	token, err := app.EasyNewJWT(user.GetID())
+	if authenticatedUser != nil {
+		token, err := app.EasyNewJWT(user.GetID())
 
-	if err != nil {
-		fmt.Println("UNAUTHORIZED")
+		if err != nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		c.JSON(http.StatusOK, userWithToken{
+			*authenticatedUser,
+			token,
+		})
+	} else {
+		c.AbortWithStatus(http.StatusUnauthorized)
 	}
-
-	c.JSON(200, userWithToken{UIModels.User{
-		ID:        user.GetID(),
-		Email:     user.GetEmail(),
-		FirstName: user.GetFirstName(),
-		LastName:  user.GetLastName(),
-	}, token})
 }
 
 func (r *authResource) Register(c *gin.Context) {
@@ -69,7 +71,7 @@ func (r *authResource) Register(c *gin.Context) {
 			c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 		}
 
-		c.JSON(200, userWithToken{UIModels.User{
+		c.JSON(http.StatusOK, userWithToken{UIModels.User{
 			ID:        user.GetID(),
 			Email:     user.GetEmail(),
 			FirstName: user.GetFirstName(),

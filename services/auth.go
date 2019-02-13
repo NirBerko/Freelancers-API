@@ -3,12 +3,13 @@ package services
 import (
 	"freelancers/app"
 	"freelancers/models"
+	"freelancers/models/UIModels"
 	"freelancers/util"
 )
 
 type (
 	authDAO interface {
-		Login(rs app.RequestScope, user *models.User) *models.User
+		Login(rs app.RequestScope, user *models.User) models.User
 		Register(rs app.RequestScope, user *models.User) error
 	}
 
@@ -21,8 +22,21 @@ func NewAuthService(dao authDAO) *AuthService {
 	return &AuthService{dao}
 }
 
-func (s *AuthService) Login(rs app.RequestScope, user *models.User) {
-	s.dao.Login(rs, user)
+func (s *AuthService) Login(rs app.RequestScope, user *models.User) *UIModels.User {
+	findUser := s.dao.Login(rs, user)
+
+	passwordMath := util.ComparePasswords(findUser.Password, []byte(user.Password))
+
+	if passwordMath {
+		return &UIModels.User{
+			ID:        findUser.GetID(),
+			Email:     findUser.GetEmail(),
+			FirstName: findUser.GetFirstName(),
+			LastName:  findUser.GetLastName(),
+		}
+	} else {
+		return nil
+	}
 }
 
 func (s *AuthService) Register(rs app.RequestScope, user *models.User) error {
