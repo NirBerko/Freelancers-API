@@ -20,7 +20,7 @@ type (
 func ServeUserResource(rg *gin.RouterGroup, service userService) {
 	r := userResource{service}
 
-	rg.GET("/", r.GetUserDetails)
+	rg.GET("", r.GetUserDetails)
 }
 
 func (r *userResource) GetUserDetails(c *gin.Context) {
