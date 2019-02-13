@@ -5,6 +5,7 @@ import (
 	"freelancers/app"
 	"freelancers/errors"
 	"freelancers/models"
+	"freelancers/models/UIModels"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +20,7 @@ type (
 	}
 
 	userWithToken struct {
-		models.User
+		UIModels.User
 		Token string `json:"token"`
 	}
 )
@@ -43,7 +44,12 @@ func (r *authResource) Auth(c *gin.Context) {
 		fmt.Println("UNAUTHORIZED")
 	}
 
-	c.JSON(200, userWithToken{user, token})
+	c.JSON(200, userWithToken{UIModels.User{
+		ID:        user.GetID(),
+		Email:     user.GetEmail(),
+		FirstName: user.GetFirstName(),
+		LastName:  user.GetLastName(),
+	}, token})
 }
 
 func (r *authResource) Register(c *gin.Context) {
@@ -63,6 +69,11 @@ func (r *authResource) Register(c *gin.Context) {
 			c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 		}
 
-		c.JSON(200, userWithToken{user, token})
+		c.JSON(200, userWithToken{UIModels.User{
+			ID:        user.GetID(),
+			Email:     user.GetEmail(),
+			FirstName: user.GetFirstName(),
+			LastName:  user.GetLastName(),
+		}, token})
 	}
 }

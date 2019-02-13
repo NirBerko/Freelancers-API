@@ -7,7 +7,7 @@ func NewSkillDAO() *SkillDAO {
 }
 
 /*
-func (dao *SkillDAO) findSkills(rs app.RequestScope, query string) (skills map[int]models.Skill) {
+func (internalModels *SkillDAO) findSkills(rs app.RequestScope, query string) (skills map[int]models.Skill) {
 	rs.Db().Where("name LIKE ?", "%"+query+"").Find(&skills)
 	return nil
 }
