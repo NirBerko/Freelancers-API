@@ -48,7 +48,7 @@ func main() {
 	AutoMigrate(db)
 
 	r := gin.Default()
-	r.RedirectTrailingSlash = false
+	r.RedirectFixedPath = true
 	gin.SetMode(os.Getenv("MODE"))
 
 	buildRouter(r, db)
