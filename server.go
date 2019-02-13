@@ -20,8 +20,6 @@ func AutoMigrate(db *gorm.DB) {
 }
 
 func main() {
-	app.LoadConfig()
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -31,7 +29,7 @@ func main() {
 	AutoMigrate(db)
 
 	r := gin.Default()
-	gin.SetMode(app.Config.Mode)
+	gin.SetMode(os.Getenv("MODE"))
 
 	buildRouter(r, db)
 	r.Run(":" + os.Getenv("PORT"))

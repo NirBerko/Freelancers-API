@@ -7,6 +7,7 @@ import (
 	"freelancers/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"os"
 	"time"
 )
 
@@ -37,7 +38,7 @@ func (r *authResource) Auth(c *gin.Context) {
 	token, err := app.NewJWT(jwt.MapClaims{
 		"id":  user.GetID(),
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
-	}, app.Config.Jwt.JWTSigningKey)
+	}, os.Getenv("SIGNING_KEY"))
 
 	if err != nil {
 		fmt.Println("UNAUTHORIZED")

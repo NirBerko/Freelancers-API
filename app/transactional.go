@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"os"
 	"strings"
 )
 
@@ -28,7 +29,7 @@ func JwtMiddleware() gin.HandlerFunc {
 
 		claims := jwt.MapClaims{}
 		token, err := jwt.ParseWithClaims(strings.Split(authentication, "Bearer ")[1], claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(Config.Jwt.JWTVerificationKey), nil
+			return []byte(os.Getenv("VERIFICATION_KEY")), nil
 		})
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

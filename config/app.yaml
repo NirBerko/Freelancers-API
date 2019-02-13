@@ -1,9 +1,0 @@
-DSN: "host=localhost port=5432 user=nir dbname=freelancers password=12qwaszx sslmode=disable"
-Mode: debug # debug / release
-
-Server:
-  Port: 8080
-
-jwt:
-  verification_key: "QfCAH04Cob7b71QCqy738vw5XGSnFZ9d"
-  signing_key: "QfCAH04Cob7b71QCqy738vw5XGSnFZ9d"
