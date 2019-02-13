@@ -1,9 +1,7 @@
 package app
 
 import (
-	"fmt"
 	"freelancers/errors"
-	"freelancers/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -21,9 +19,6 @@ func Transactional(db *gorm.DB) gin.HandlerFunc {
 func JwtMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		rs := GetRequestScope(c)
-
-		fmt.Println(util.HashAndSalt([]byte("m1ub8wx3")))
-		fmt.Println(util.ComparePasswords("$2a$04$Omcu.rqT7zq5bHHyti8GZ.CzJXS0dFoVuRJmSMmCzzkLAbXkPAGfa", []byte("m1ub8wx3")))
 
 		authentication := c.GetHeader("Authorization")
 

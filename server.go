@@ -38,6 +38,10 @@ func main() {
 	r.Run(":" + os.Getenv("PORT"))
 }
 
+type requestScope struct {
+	userID uint64
+}
+
 func buildRouter(router *gin.Engine, db *gorm.DB) {
 	router.Use(
 		app.Init(),
@@ -52,12 +56,15 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 	authDao := daos.NewAuthDAO()
 	apis.ServeAuthResource(router, services.NewAuthService(authDao))
 
-	projectDAO := daos.NewProjectDAO()
-	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDAO))
+	projectDao := daos.NewProjectDAO()
+	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDao))
 
 	router.Use(
 		app.JwtMiddleware(),
 	)
+
+	userDao := daos.NewUserDAO()
+	apis.ServeUserResource(router.Group("/user"), services.NewUserService(userDao))
 
 	router.GET("/pingAuth", func(c *gin.Context) {
 		c.Abort()

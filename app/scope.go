@@ -9,6 +9,7 @@ type RequestScope interface {
 	SetDB(db *gorm.DB)
 	RequestID() string
 	SetUserID(userId uint64)
+	UserID() uint64
 }
 
 type requestScope struct {

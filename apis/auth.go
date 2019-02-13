@@ -39,7 +39,7 @@ func (r *authResource) Login(c *gin.Context) {
 	authenticatedUser := r.service.Login(app.GetRequestScope(c), &user)
 
 	if authenticatedUser != nil {
-		token, err := app.EasyNewJWT(user.GetID())
+		token, err := app.EasyNewJWT(authenticatedUser.GetID())
 
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
