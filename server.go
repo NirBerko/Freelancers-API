@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"net/http"
 	"os"
 )
 
@@ -27,11 +26,7 @@ func main() {
 	r := gin.Default()
 	gin.SetMode(app.Config.Mode)
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, nil)
-	})
-
-	//buildRouter(r, db)
+	buildRouter(r, db)
 	r.Run(":" + os.Getenv("PORT"))
 }
 
