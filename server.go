@@ -32,10 +32,6 @@ func main() {
 	r := gin.Default()
 	gin.SetMode(os.Getenv("MODE"))
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
-	})
-
 	buildRouter(r, db)
 	r.Run(":" + os.Getenv("PORT"))
 }
