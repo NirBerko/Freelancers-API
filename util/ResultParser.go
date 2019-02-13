@@ -1,4 +1,4 @@
-package dataModel
+package util
 
 type ResultParser struct {
 	Data   interface{}

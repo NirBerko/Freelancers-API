@@ -2,9 +2,9 @@ package apis
 
 import (
 	"freelancers/app"
-	"freelancers/dataModel"
 	"freelancers/errors"
 	"freelancers/models"
+	"freelancers/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 type (
 	projectService interface {
 		CreateProject(rs app.RequestScope, project *models.Project) error
-		GetProjectByID(rs app.RequestScope, id uint) dataModel.ResultParser
+		GetProjectByID(rs app.RequestScope, id uint) util.ResultParser
 	}
 
 	projectResource struct {

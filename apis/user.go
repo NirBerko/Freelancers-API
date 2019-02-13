@@ -2,14 +2,15 @@ package apis
 
 import (
 	"freelancers/app"
-	"freelancers/models/UIModels"
+	"freelancers/errors"
+	"freelancers/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type (
 	userService interface {
-		GetUserDetails(rs app.RequestScope) UIModels.User
+		GetUserDetails(rs app.RequestScope) util.ResultParser
 	}
 
 	userResource struct {
@@ -24,7 +25,12 @@ func ServeUserResource(rg *gin.RouterGroup, service userService) {
 }
 
 func (r *userResource) GetUserDetails(c *gin.Context) {
-	user := r.service.GetUserDetails(app.GetRequestScope(c))
+	result := r.service.GetUserDetails(app.GetRequestScope(c))
 
-	c.JSON(http.StatusOK, user)
+	if result.Error != nil {
+		errorHandler := errors.InternalServerError(result.Error)
+		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
+	} else {
+		c.JSON(http.StatusOK, result.Data)
+	}
 }

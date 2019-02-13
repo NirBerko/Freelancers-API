@@ -1,6 +1,7 @@
 package daos
 
 import (
+	"fmt"
 	"freelancers/app"
 	"freelancers/models"
 )
@@ -12,7 +13,12 @@ func NewSkillDAO() *SkillDAO {
 }
 
 func (dao *SkillDAO) CreateSkill(rs app.RequestScope, skill *models.Skill) {
-	rs.Db().Create(&skill)
+	var findSkill models.Skill
+	rs.Db().Where("name LIKE ?", skill.Name).Find(&findSkill)
+
+	fmt.Println(findSkill)
+
+	//rs.Db().Create(&skill)
 }
 
 /*

@@ -3,9 +3,9 @@ package services
 import (
 	"errors"
 	"freelancers/app"
-	"freelancers/dataModel"
 	"freelancers/models"
 	"freelancers/models/UIModels"
+	"freelancers/util"
 )
 
 type (
@@ -27,7 +27,7 @@ func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Proj
 	return s.dao.CreateProject(rs, project)
 }
 
-func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) dataModel.ResultParser {
+func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.ResultParser {
 	findProject := s.dao.GetProjectByID(rs, id)
 
 	var skills []string
@@ -51,7 +51,7 @@ func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) dataModel.
 		err = errors.New("Not Found")
 	}
 
-	return dataModel.ResultParser{
+	return util.ResultParser{
 		Data:   project,
 		IsDone: true,
 		Error:  err,
