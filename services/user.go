@@ -4,24 +4,17 @@ import (
 	"freelancers/app"
 	"freelancers/models"
 	"freelancers/models/UIModels"
-	"github.com/jinzhu/gorm"
 )
 
 type (
 	userDao interface {
-		GetUserByID(rs app.RequestScope, id uint64) models.User
+		GetUserByID(rs app.RequestScope, id uint) models.User
 	}
 
 	UserService struct {
 		dao userDao
 	}
 )
-
-type aa struct {
-	db        *gorm.DB
-	requestID string
-	userID    uint64
-}
 
 func NewUserService(dao userDao) *UserService {
 	return &UserService{dao}

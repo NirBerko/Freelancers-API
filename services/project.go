@@ -1,13 +1,17 @@
 package services
 
 import (
+	"errors"
 	"freelancers/app"
+	"freelancers/dataModel"
 	"freelancers/models"
+	"freelancers/models/UIModels"
 )
 
 type (
 	projectDao interface {
 		CreateProject(rs app.RequestScope, project *models.Project) error
+		GetProjectByID(rs app.RequestScope, id uint) models.Project
 	}
 
 	ProjectService struct {
@@ -21,4 +25,35 @@ func NewProjectService(dao projectDao) *ProjectService {
 
 func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Project) error {
 	return s.dao.CreateProject(rs, project)
+}
+
+func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) dataModel.ResultParser {
+	findProject := s.dao.GetProjectByID(rs, id)
+
+	var skills []string
+
+	for _, skill := range findProject.GetSkills() {
+		skills = append(skills, skill.GetName())
+	}
+
+	project := UIModels.Project{
+		ID:          findProject.GetID(),
+		Title:       findProject.GetTitle(),
+		Description: findProject.GetDescription(),
+		BudgetType:  findProject.GetBudgetType(),
+		BudgetLevel: findProject.GetBudgetLevel(),
+		Skills:      skills,
+	}
+
+	var err error
+
+	if findProject.GetID() == 0 {
+		err = errors.New("Not Found")
+	}
+
+	return dataModel.ResultParser{
+		Data:   project,
+		IsDone: true,
+		Error:  err,
+	}
 }

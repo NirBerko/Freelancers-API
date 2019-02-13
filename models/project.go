@@ -2,14 +2,37 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/lib/pq"
 )
 
 type Project struct {
 	gorm.Model
 	Title       string
 	Description string
-	Skills      pq.StringArray `gorm:"type:varchar(64)[]"`
-	BudgetType  int
-	BudgetLevel int
+	Skills      []Skill `gorm:"many2many:project_skills;"`
+	BudgetType  uint
+	BudgetLevel uint
+}
+
+func (p *Project) GetID() uint {
+	return p.ID
+}
+
+func (p *Project) GetTitle() string {
+	return p.Title
+}
+
+func (p *Project) GetDescription() string {
+	return p.Description
+}
+
+func (p *Project) GetSkills() []Skill {
+	return p.Skills
+}
+
+func (p *Project) GetBudgetType() uint {
+	return p.BudgetType
+}
+
+func (p *Project) GetBudgetLevel() uint {
+	return p.BudgetLevel
 }

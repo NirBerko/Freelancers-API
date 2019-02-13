@@ -11,7 +11,7 @@ func NewUserDAO() *UserDAO {
 	return &UserDAO{}
 }
 
-func (dao *UserDAO) GetUserByID(rs app.RequestScope, id uint64) (findUser models.User) {
+func (dao *UserDAO) GetUserByID(rs app.RequestScope, id uint) (findUser models.User) {
 	rs.Db().Where("id = ?", id).First(&findUser)
 
 	return

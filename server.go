@@ -18,6 +18,8 @@ import (
 func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
+	db.AutoMigrate(&models.Skill{})
+	db.Model(&models.Project{}).Related(&models.Skill{}, "Skills")
 }
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -54,10 +56,6 @@ func main() {
 	r.Run(":" + os.Getenv("PORT"))
 }
 
-type requestScope struct {
-	userID uint64
-}
-
 func buildRouter(router *gin.Engine, db *gorm.DB) {
 	router.Use(
 		app.Init(),
@@ -73,9 +71,6 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 	authDao := daos.NewAuthDAO()
 	apis.ServeAuthResource(router, services.NewAuthService(authDao))
 
-	projectDao := daos.NewProjectDAO()
-	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDao))
-
 	router.Use(
 		app.JwtMiddleware(),
 	)
@@ -83,9 +78,7 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 	userDao := daos.NewUserDAO()
 	apis.ServeUserResource(router.Group("/user"), services.NewUserService(userDao))
 
-	router.GET("/pingAuth", func(c *gin.Context) {
-		c.Abort()
-		c.String(http.StatusOK, "OK "+app.Version)
-	})
+	projectDao := daos.NewProjectDAO()
+	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDao))
 
 }

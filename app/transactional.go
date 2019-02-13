@@ -28,7 +28,7 @@ func JwtMiddleware() gin.HandlerFunc {
 		})
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			rs.SetUserID(uint64(claims["id"].(float64)))
+			rs.SetUserID(uint(claims["id"].(float64)))
 		} else {
 			errorHandler := errors.Unauthorized(err.Error())
 			c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Message)
