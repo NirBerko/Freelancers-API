@@ -23,8 +23,29 @@ func NewProjectService(dao projectDao) *ProjectService {
 	return &ProjectService{dao}
 }
 
-func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Project) error {
-	return s.dao.CreateProject(rs, project)
+func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Project) util.ResultParser {
+	err := s.dao.CreateProject(rs, project)
+
+	var skills []string
+
+	for _, skill := range project.Skills {
+		skills = append(skills, skill.GetName())
+	}
+
+	projectUI := UIModels.Project{
+		ID:          project.GetID(),
+		Title:       project.GetTitle(),
+		Description: project.GetDescription(),
+		BudgetLevel: project.GetBudgetLevel(),
+		BudgetType:  project.GetBudgetType(),
+		Skills:      skills,
+	}
+
+	return util.ResultParser{
+		Data:   projectUI,
+		IsDone: true,
+		Error:  err,
+	}
 }
 
 func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.ResultParser {

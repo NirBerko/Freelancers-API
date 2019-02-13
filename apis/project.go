@@ -12,7 +12,7 @@ import (
 
 type (
 	projectService interface {
-		CreateProject(rs app.RequestScope, project *models.Project) error
+		CreateProject(rs app.RequestScope, project *models.Project) util.ResultParser
 		GetProjectByID(rs app.RequestScope, id uint) util.ResultParser
 	}
 
@@ -63,12 +63,12 @@ func (r *projectResource) CreateProject(c *gin.Context) {
 		Skills:      skillsModels,
 	}
 
-	err := r.service.CreateProject(app.GetRequestScope(c), project)
+	result := r.service.CreateProject(app.GetRequestScope(c), project)
 
-	if err != nil {
-		errorHandler := errors.InternalServerError(err)
+	if result.Error != nil {
+		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
-		c.JSON(http.StatusOK, &project)
+		c.JSON(http.StatusOK, &result.Data)
 	}
 }

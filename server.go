@@ -47,6 +47,11 @@ func main() {
 	log.Println("DSN: " + os.Getenv("DSN"))
 
 	db, _ := gorm.Open("postgres", os.Getenv("DSN"))
+
+	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+		return "t_" + defaultTableName
+	}
+
 	AutoMigrate(db)
 
 	r := gin.Default()
