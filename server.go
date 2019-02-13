@@ -43,7 +43,7 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 		app.Transactional(db),
 	)
 
-	router.GET("/ping", func(c *gin.Context) {
+	router.GET("/ping", func(c *gin.Context)
 		c.Abort()
 		c.String(200, "OK "+app.Version)
 	})
