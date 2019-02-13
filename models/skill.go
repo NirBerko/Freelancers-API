@@ -1,6 +1,8 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type Skill struct {
-	DBBase
+	gorm.Model
 	Name string
 }

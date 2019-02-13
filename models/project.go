@@ -1,9 +1,12 @@
 package models
 
-import "github.com/lib/pq"
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
+)
 
 type Project struct {
-	DBBase
+	gorm.Model
 	Title       string
 	Description string
 	Skills      pq.StringArray `gorm:"type:varchar(64)[]"`

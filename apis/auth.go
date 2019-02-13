@@ -5,10 +5,7 @@ import (
 	"freelancers/app"
 	"freelancers/errors"
 	"freelancers/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"os"
-	"time"
 )
 
 type (
@@ -19,6 +16,11 @@ type (
 
 	authResource struct {
 		service authService
+	}
+
+	userWithToken struct {
+		models.User
+		Token string `json:"token"`
 	}
 )
 
@@ -31,27 +33,22 @@ func ServeAuthResource(rg *gin.Engine, service authService) {
 
 func (r *authResource) Auth(c *gin.Context) {
 	var user models.User
-	c.BindJSON(&user)
+	_ = c.BindJSON(&user)
 
 	//r.service.Login(app.GetRequestScope(c), &user)*/
 
-	token, err := app.NewJWT(jwt.MapClaims{
-		"id":  user.GetID(),
-		"exp": time.Now().Add(time.Hour * 72).Unix(),
-	}, os.Getenv("SIGNING_KEY"))
+	token, err := app.EasyNewJWT(user.GetID())
 
 	if err != nil {
 		fmt.Println("UNAUTHORIZED")
 	}
 
-	c.JSON(200, map[string]string{
-		"token": token,
-	})
+	c.JSON(200, userWithToken{user, token})
 }
 
 func (r *authResource) Register(c *gin.Context) {
 	var user models.User
-	c.BindJSON(&user)
+	_ = c.BindJSON(&user)
 
 	err := r.service.Register(app.GetRequestScope(c), &user)
 
@@ -59,6 +56,13 @@ func (r *authResource) Register(c *gin.Context) {
 		errorHandler := errors.InternalServerError(err)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
-		c.JSON(200, user)
+		token, err := app.EasyNewJWT(user.GetID())
+
+		if err != nil {
+			errorHandler := errors.InternalServerError(err)
+			c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
+		}
+
+		c.JSON(200, userWithToken{user, token})
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	"time"
 )
 
 func Init() gin.HandlerFunc {
@@ -23,6 +25,13 @@ func newRequestScope(request *http.Request) RequestScope {
 	return &requestScope{
 		requestID: requestID,
 	}
+}
+
+func EasyNewJWT(id uint) (string, error) {
+	return NewJWT(jwt.MapClaims{
+		"id":  id,
+		"exp": time.Now().Add(time.Hour * 72).Unix(),
+	}, os.Getenv("SIGNING_KEY"))
 }
 
 func NewJWT(claims jwt.MapClaims, signingKey string, signingMethod ...jwt.SigningMethod) (string, error) {

@@ -59,7 +59,7 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 
 	router.GET("/pingAuth", func(c *gin.Context) {
 		c.Abort()
-		c.String(200, "OK "+app.Version)
+		c.String(http.StatusOK, "OK "+app.Version)
 	})
 
 }
