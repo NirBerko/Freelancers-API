@@ -55,15 +55,18 @@ func (r *projectResource) CreateProject(c *gin.Context) {
 		skillsModels = append(skillsModels, models.Skill{Name: skill})
 	}
 
+	rs := app.GetRequestScope(c)
+
 	project := &models.Project{
 		Title:       bodyProject.Title,
 		Description: bodyProject.Description,
 		BudgetLevel: bodyProject.BudgetLevel,
 		BudgetType:  bodyProject.BudgetType,
 		Skills:      skillsModels,
+		User:        rs.User(),
 	}
 
-	result := r.service.CreateProject(app.GetRequestScope(c), project)
+	result := r.service.CreateProject(rs, project)
 
 	if result.Error != nil {
 		errorHandler := errors.InternalServerError(result.Error)

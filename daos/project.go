@@ -17,6 +17,6 @@ func (dao *ProjectDAO) CreateProject(rs app.RequestScope, project *models.Projec
 }
 
 func (dao *ProjectDAO) GetProjectByID(rs app.RequestScope, id uint) (project models.Project) {
-	rs.Db().Where("id = ?", id).Preload("Skills").First(&project)
+	rs.Db().Where("id = ?", id).Preload("Skills").Preload("User").First(&project)
 	return
 }

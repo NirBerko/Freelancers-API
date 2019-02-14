@@ -39,6 +39,12 @@ func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Proj
 		BudgetLevel: project.GetBudgetLevel(),
 		BudgetType:  project.GetBudgetType(),
 		Skills:      skills,
+		User: UIModels.User{
+			ID:        project.GetUser().GetID(),
+			Email:     project.GetUser().GetEmail(),
+			FirstName: project.GetUser().GetFirstName(),
+			LastName:  project.GetUser().GetLastName(),
+		},
 	}
 
 	return util.ResultParser{
@@ -64,6 +70,12 @@ func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.Resul
 		BudgetType:  findProject.GetBudgetType(),
 		BudgetLevel: findProject.GetBudgetLevel(),
 		Skills:      skills,
+		User: UIModels.User{
+			ID:        findProject.GetUser().GetID(),
+			Email:     findProject.GetUser().GetEmail(),
+			FirstName: findProject.GetUser().GetFirstName(),
+			LastName:  findProject.GetUser().GetLastName(),
+		},
 	}
 
 	var err error

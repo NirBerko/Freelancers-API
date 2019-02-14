@@ -7,4 +7,5 @@ type Project struct {
 	Skills      []string
 	BudgetType  uint
 	BudgetLevel uint
+	User        User
 }

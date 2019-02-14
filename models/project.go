@@ -6,6 +6,8 @@ import (
 
 type Project struct {
 	gorm.Model
+	UserID      uint
+	User        User `gorm:"ForeignKey:UserID"`
 	Title       string
 	Description string
 	Skills      []Skill `gorm:"many2many:project_skills;"`
@@ -15,6 +17,10 @@ type Project struct {
 
 func (p *Project) GetID() uint {
 	return p.ID
+}
+
+func (p *Project) GetUser() User {
+	return p.User
 }
 
 func (p *Project) GetTitle() string {

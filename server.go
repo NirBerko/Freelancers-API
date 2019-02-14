@@ -61,6 +61,14 @@ func main() {
 	r.Run(":" + os.Getenv("PORT"))
 }
 
+func userDetailsMiddleware(userDao *daos.UserDAO) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		rs := app.GetRequestScope(c)
+		user := userDao.GetUserByID(rs, rs.UserID())
+		rs.SetUser(user)
+	}
+}
+
 func buildRouter(router *gin.Engine, db *gorm.DB) {
 	router.Use(
 		app.Init(),
@@ -81,7 +89,13 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 	)
 
 	userDao := daos.NewUserDAO()
-	apis.ServeUserResource(router.Group("/user"), services.NewUserService(userDao))
+	userService := services.NewUserService(userDao)
+
+	router.Use(
+		userDetailsMiddleware(userDao),
+	)
+
+	apis.ServeUserResource(router.Group("/user"), userService)
 
 	projectDao := daos.NewProjectDAO()
 	apis.ServeProjectResource(router.Group("/project"), services.NewProjectService(projectDao))

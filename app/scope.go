@@ -1,6 +1,7 @@
 package app
 
 import (
+	"freelancers/models"
 	"github.com/jinzhu/gorm"
 )
 
@@ -10,12 +11,15 @@ type RequestScope interface {
 	RequestID() string
 	SetUserID(userId uint)
 	UserID() uint
+	SetUser(user models.User)
+	User() models.User
 }
 
 type requestScope struct {
 	db        *gorm.DB
 	requestID string
 	userID    uint
+	user      models.User
 }
 
 func (rs *requestScope) RequestID() string {
@@ -28,6 +32,14 @@ func (rs *requestScope) SetUserID(userId uint) {
 
 func (rs *requestScope) UserID() uint {
 	return rs.userID
+}
+
+func (rs *requestScope) SetUser(user models.User) {
+	rs.user = user
+}
+
+func (rs *requestScope) User() models.User {
+	return rs.user
 }
 
 func (rs *requestScope) SetDB(db *gorm.DB) {
