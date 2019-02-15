@@ -10,6 +10,10 @@ type User struct {
 	LastName  string `gorm:"column:last_name" json:"last_name"`
 }
 
+func (u User) SetID(id uint) {
+	u.ID = id
+}
+
 func (u User) GetID() uint {
 	return u.ID
 }

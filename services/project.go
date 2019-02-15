@@ -12,6 +12,7 @@ type (
 	projectDao interface {
 		CreateProject(rs app.RequestScope, project *models.Project) error
 		GetProjectByID(rs app.RequestScope, id uint) models.Project
+		GetAllProjects(rs app.RequestScope) (err error, projects []models.Project)
 	}
 
 	ProjectService struct {
@@ -23,7 +24,7 @@ func NewProjectService(dao projectDao) *ProjectService {
 	return &ProjectService{dao}
 }
 
-func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Project) util.ResultParser {
+func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Project) util.HandleResult {
 	err := s.dao.CreateProject(rs, project)
 
 	var skills []string
@@ -47,14 +48,14 @@ func (s *ProjectService) CreateProject(rs app.RequestScope, project *models.Proj
 		},
 	}
 
-	return util.ResultParser{
-		Data:   projectUI,
-		IsDone: true,
-		Error:  err,
+	return util.HandleResult{
+		Result:    projectUI,
+		IsSuccess: true,
+		Error:     err,
 	}
 }
 
-func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.ResultParser {
+func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.HandleResult {
 	findProject := s.dao.GetProjectByID(rs, id)
 
 	var skills []string
@@ -84,9 +85,29 @@ func (s *ProjectService) GetProjectByID(rs app.RequestScope, id uint) util.Resul
 		err = errors.New("Not Found")
 	}
 
-	return util.ResultParser{
-		Data:   project,
-		IsDone: true,
-		Error:  err,
+	return util.HandleResult{
+		Result:    project,
+		IsSuccess: true,
+		Error:     err,
 	}
+}
+
+func (s *ProjectService) GetAllProjects(rs app.RequestScope) util.HandleResult {
+	err, projects := s.dao.GetAllProjects(rs)
+
+	IsSuccess := true
+
+	if err != nil {
+		IsSuccess = false
+	}
+
+	return util.HandleResult{
+		Result:    projects,
+		Error:     err,
+		IsSuccess: IsSuccess,
+	}
+
+	//var projectsResult []interface{}
+
+	//fmt.Println(projectsResult)
 }

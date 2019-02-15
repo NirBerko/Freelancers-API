@@ -21,7 +21,7 @@ func NewUserService(dao userDao) *UserService {
 	return &UserService{dao}
 }
 
-func (s *UserService) GetUserDetails(rs app.RequestScope) util.ResultParser {
+func (s *UserService) GetUserDetails(rs app.RequestScope) util.HandleResult {
 	findUser := s.dao.GetUserByID(rs, rs.UserID())
 
 	user := UIModels.User{
@@ -31,9 +31,9 @@ func (s *UserService) GetUserDetails(rs app.RequestScope) util.ResultParser {
 		LastName:  findUser.GetLastName(),
 	}
 
-	return util.ResultParser{
-		Data:   user,
-		IsDone: true,
-		Error:  nil,
+	return util.HandleResult{
+		Result:    user,
+		IsSuccess: true,
+		Error:     nil,
 	}
 }

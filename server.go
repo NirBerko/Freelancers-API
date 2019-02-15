@@ -4,6 +4,7 @@ import (
 	"freelancers/apis"
 	"freelancers/app"
 	"freelancers/daos"
+	"freelancers/errors"
 	"freelancers/models"
 	"freelancers/services"
 	"github.com/gin-gonic/gin"
@@ -65,7 +66,14 @@ func userDetailsMiddleware(userDao *daos.UserDAO) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		rs := app.GetRequestScope(c)
 		user := userDao.GetUserByID(rs, rs.UserID())
-		rs.SetUser(user)
+
+		if user.GetID() == 0 {
+			errorHandler := errors.Unauthorized("")
+			c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Message)
+		} else {
+			rs.SetUser(user)
+			c.Next()
+		}
 	}
 }
 

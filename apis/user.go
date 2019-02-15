@@ -10,7 +10,7 @@ import (
 
 type (
 	userService interface {
-		GetUserDetails(rs app.RequestScope) util.ResultParser
+		GetUserDetails(rs app.RequestScope) util.HandleResult
 	}
 
 	userResource struct {
@@ -31,6 +31,6 @@ func (r *userResource) GetUserDetails(c *gin.Context) {
 		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
-		c.JSON(http.StatusOK, result.Data)
+		c.JSON(http.StatusOK, result.GetResult())
 	}
 }

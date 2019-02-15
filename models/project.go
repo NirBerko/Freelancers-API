@@ -7,7 +7,7 @@ import (
 type Project struct {
 	gorm.Model
 	UserID      uint
-	User        User `gorm:"ForeignKey:UserID"`
+	User        User `gorm:"foreignkey:UserID"`
 	Title       string
 	Description string
 	Skills      []Skill `gorm:"many2many:project_skills;"`

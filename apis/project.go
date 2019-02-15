@@ -12,8 +12,9 @@ import (
 
 type (
 	projectService interface {
-		CreateProject(rs app.RequestScope, project *models.Project) util.ResultParser
-		GetProjectByID(rs app.RequestScope, id uint) util.ResultParser
+		CreateProject(rs app.RequestScope, project *models.Project) util.HandleResult
+		GetProjectByID(rs app.RequestScope, id uint) util.HandleResult
+		GetAllProjects(rs app.RequestScope) util.HandleResult
 	}
 
 	projectResource struct {
@@ -30,7 +31,8 @@ func ServeProjectResource(rg *gin.RouterGroup, service projectService) {
 	r := &projectResource{service}
 
 	rg.PUT("", r.CreateProject)
-	rg.GET("/:id", r.GetProjectByID)
+	rg.GET("/getbyid/:id", r.GetProjectByID)
+	rg.GET("/all", r.GetAllProjects)
 }
 
 func (r *projectResource) GetProjectByID(c *gin.Context) {
@@ -41,7 +43,7 @@ func (r *projectResource) GetProjectByID(c *gin.Context) {
 		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
-		c.JSON(http.StatusOK, result.Data)
+		c.JSON(http.StatusOK, result.GetResult())
 	}
 }
 
@@ -72,6 +74,17 @@ func (r *projectResource) CreateProject(c *gin.Context) {
 		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
-		c.JSON(http.StatusOK, &result.Data)
+		c.JSON(http.StatusOK, result.GetResult())
+	}
+}
+
+func (r *projectResource) GetAllProjects(c *gin.Context) {
+	result := r.service.GetAllProjects(app.GetRequestScope(c))
+
+	if result.GetError() != nil || !result.GetIsSuccess() {
+		errorHandler := errors.InternalServerError(result.Error)
+		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
+	} else {
+		c.JSON(200, result.GetResult())
 	}
 }
