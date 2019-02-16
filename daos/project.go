@@ -22,7 +22,7 @@ func (dao *ProjectDAO) GetProjectByID(rs app.RequestScope, id uint) (project mod
 }
 
 func (dao *ProjectDAO) GetAllProjects(rs app.RequestScope) (err error, projects []models.Project) {
-	db := rs.Db().Model(rs.User()).Related(&projects)
+	db := rs.Db().Model(rs.User()).Preload("Skills").Preload("User").Related(&projects)
 
 	return db.Error, projects
 }
