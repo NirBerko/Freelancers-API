@@ -7,6 +7,7 @@ import (
 	"freelancers/errors"
 	"freelancers/models"
 	"freelancers/services"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -21,22 +22,6 @@ func AutoMigrate(db *gorm.DB) {
 	db.AutoMigrate(&models.Project{})
 	db.AutoMigrate(&models.Skill{})
 	db.Model(&models.Project{}).Related(&models.Skill{}, "Skills")
-}
-
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
-	}
 }
 
 func main() {
@@ -56,6 +41,8 @@ func main() {
 	AutoMigrate(db)
 
 	r := gin.Default()
+	r.Use(cors.Default())
+
 	gin.SetMode(os.Getenv("MODE"))
 
 	buildRouter(r, db)
@@ -81,7 +68,6 @@ func buildRouter(router *gin.Engine, db *gorm.DB) {
 	router.Use(
 		app.Init(),
 		app.Transactional(db),
-		CORSMiddleware(),
 	)
 
 	router.GET("/ping", func(c *gin.Context) {
