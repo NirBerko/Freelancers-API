@@ -31,7 +31,7 @@ func ServeProjectResource(rg *gin.RouterGroup, service projectService) {
 	r := &projectResource{service}
 
 	rg.PUT("", r.CreateProject)
-	rg.GET("/getbyid/:id", r.GetProjectByID)
+	rg.GET("/byid/:id", r.GetProjectByID)
 	rg.GET("/all", r.GetAllProjects)
 }
 
@@ -39,7 +39,7 @@ func (r *projectResource) GetProjectByID(c *gin.Context) {
 	id, _ := strconv.ParseUint(c.Param("id"), 0, 64)
 	result := r.service.GetProjectByID(app.GetRequestScope(c), uint(id))
 
-	if result.Error != nil {
+	if result.GetError() != nil || !result.GetIsSuccess() {
 		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
@@ -70,7 +70,7 @@ func (r *projectResource) CreateProject(c *gin.Context) {
 
 	result := r.service.CreateProject(rs, project)
 
-	if result.Error != nil {
+	if result.GetError() != nil || !result.GetIsSuccess() {
 		errorHandler := errors.InternalServerError(result.Error)
 		c.AbortWithStatusJSON(errorHandler.StatusCode(), errorHandler.Error())
 	} else {
